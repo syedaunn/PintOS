@@ -88,8 +88,13 @@ struct thread
     char name[16];                      /* Name (for debugging purposes). */
     uint8_t *stack;                     /* Saved stack pointer. */
     int priority;                       /* Priority. */
+    int priority_self;			/* Priority assigned at spawni */
+    struct lock *td_wait_lock;		/* Ptr to lock on which thread is waiting*/
+    struct list donations;
+    struct list_elem donation_elem;
     struct list_elem allelem;           /* List element for all threads list. */
-
+    int64_t thread_ticks;
+    struct list_elem elem_sleep;
     /* Shared between thread.c and synch.c. */
     struct list_elem elem;              /* List element. */
 
