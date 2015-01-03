@@ -147,6 +147,16 @@ thread_print_stats (void)
           idle_ticks, kernel_ticks, user_ticks);
 }
 
+/* Comparator function for inserting thread descending order
+   into based on tick value*/
+bool priority_less_func(const struct list_elem *a, const struct list_elem *b, void* aux)
+{
+  struct thread *sa, *sb;
+  sa = list_entry(a, struct thread, allelem);
+  sb = list_entry(b, struct thread, allelem);
+  return (sa->priority > sb->priority);
+}
+
 /* Creates a new kernel thread named NAME with the given initial
    PRIORITY, which executes FUNCTION passing AUX as the argument,
    and adds it to the ready queue.  Returns the thread identifier
@@ -468,6 +478,7 @@ init_thread (struct thread *t, const char *name, int priority)
   strlcpy (t->name, name, sizeof t->name);
   t->stack = (uint8_t *) t + PGSIZE;
   t->priority = priority;
+  t->priority_self = priority;
   t->magic = THREAD_MAGIC;
   list_push_back (&all_list, &t->allelem);
 }
