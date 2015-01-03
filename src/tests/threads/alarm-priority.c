@@ -50,7 +50,7 @@ alarm_priority_thread (void *aux UNUSED)
   /* Now we know we're at the very beginning of a timer tick, so
      we can call timer_sleep() without worrying about races
      between checking the time and a timer interrupt. */
- printf("Thread %s - time %" PRId64 "\n",thread_name(),(wake_time-timer_ticks()));
+ //printf("Thread %s - time %" PRId64 "\n",thread_name(),(wake_time-timer_ticks()));
   timer_sleep (wake_time - timer_ticks ());
 
   /* Print a message on wake-up. */
