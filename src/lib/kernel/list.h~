@@ -90,7 +90,7 @@
 struct list_elem 
   {
     struct list_elem *prev;     /* Previous list element. */
-    //int priority;
+    int priority;
     struct list_elem *next;     /* Next list element. */
   };
 
@@ -137,8 +137,6 @@ struct list_elem *list_rend (struct list *);
 struct list_elem *list_head (struct list *);
 struct list_elem *list_tail (struct list *);
 
-void traverseList(struct list *);      //Custom Function
-
 /* List insertion. */
 void list_insert (struct list_elem *, struct list_elem *);
 void list_splice (struct list_elem *before,
@@ -176,15 +174,8 @@ void list_insert_ordered (struct list *, struct list_elem *,
                           list_less_func *, void *aux);
 void list_unique (struct list *, struct list *duplicates,
                   list_less_func *, void *aux);
-
-/*
 void list_insert_priority_ordered (struct list *, struct list_elem *,
-      				 int priority);	//Custom Function
-void list_insert_priority_ordered_front (struct list *, struct list_elem *,
-               int priority); //Custom Function
-void list_insert_priority_ordered_ascending (struct list *, struct list_elem *,
-               int priority); //Custom Function
-*/
+      int priority);		//Custom Function
 
 /* Max and min. */
 struct list_elem *list_max (struct list *, list_less_func *, void *aux);
