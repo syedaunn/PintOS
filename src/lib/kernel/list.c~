@@ -65,8 +65,8 @@ list_init (struct list *list)
   list->head.next = &list->tail;
   list->tail.prev = &list->head;
   list->tail.next = NULL;
-  //list->head.priority = 64;
-  //list->tail.priority = -1;
+  list->head.priority = 64;
+  list->tail.priority = -1;
 }
 
 /* Returns the beginning of LIST.  */
@@ -163,27 +163,6 @@ list_tail (struct list *list)
   ASSERT (list != NULL);
   return &list->tail;
 }
-
-/* Custom Function
-   Traverses the list and prints out the priorities of the elements in the list */ /*
-void 
-traverseList(struct list * myList)
-{
-  ASSERT (myList != NULL);
-
-  printf("\nStart ->");
-
-  struct list_elem *e = myList->head.next;
-
-  //while(e != &myList->tail)
-  while(e->priority != -1)
-  {
-    printf(" %d ->", e->priority);
-    e = e->next;
-  }
-
-  printf(" End\n");
-} */
 
 /* Inserts ELEM just before BEFORE, which may be either an
    interior element or a tail.  The latter case is equivalent to
@@ -481,14 +460,14 @@ list_insert_ordered (struct list *list, struct list_elem *elem,
   return list_insert (e, elem);
 }
 
-
 /* Custom Function
-   Inserts the items in a list according to priorities keeping the current item at the end */ /*
+   Inserts the items in a list according to priorities */
 void
-list_insert_priority_ordered (struct list *list, struct list_elem *elem, int priority)
+list_insert_priority_ordered (struct list *list, struct list_elem *elem,
+                     int priority)
 {
+printf("Priority insert\n");
   struct list_elem *e;
-  elem->priority = priority;
 
   ASSERT (list != NULL);
   ASSERT (elem != NULL);
@@ -500,53 +479,10 @@ list_insert_priority_ordered (struct list *list, struct list_elem *elem, int pri
       break;
     }
   }
-  
-  return list_insert (e, elem);
-} */
-
-/* Custom Function
-   Inserts the items in a list according to priorities keeping the current item on front */ /*
-void
-list_insert_priority_ordered_front (struct list *list, struct list_elem *elem, int priority)
-{
-  struct list_elem *e;
+      
   elem->priority = priority;
-
-  ASSERT (list != NULL);
-  ASSERT (elem != NULL);
-
-  for (e = list_begin (list); e != list_end (list); e = list_next (e))
-  {
-    if (e->priority <= priority)
-    {
-      break;
-    }
-  }
-  
   return list_insert (e, elem);
-} */
-
-/* Custom Function
-   Inserts the items in a list according to ascending priorities */ /*
-void
-list_insert_priority_ordered_ascending (struct list *list, struct list_elem *elem, int priority)
-{
-  struct list_elem *e;
-  elem->priority = priority;
-
-  ASSERT (list != NULL);
-  ASSERT (elem != NULL);
-
-  for (e = list_begin (list); e != list_end (list); e = list_next (e))
-  {
-    if (e->priority > priority)
-    {
-      break;
-    }
-  }
-  
-  return list_insert (e, elem);
-} */
+}
 
 /* Iterates through LIST and removes all but the first in each
    set of adjacent elements that are equal according to LESS

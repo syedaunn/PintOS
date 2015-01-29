@@ -3,12 +3,16 @@
 #include <inttypes.h>
 #include <round.h>
 #include <stdio.h>
+#include <fixedpoint.h>
 #include "devices/pit.h"
 #include "threads/interrupt.h"
 #include "threads/synch.h"
 #include "threads/thread.h"
   
 /* See [8254] for hardware details of the 8254 timer chip. */
+
+//Recalcuate priority after every 4 ticks
+#define PRIORITY_RECALCULATION_FREQUENCY 4
 
 #if TIMER_FREQ < 19
 #error 8254 timer requires TIMER_FREQ >= 19
@@ -88,12 +92,9 @@ timer_elapsed (int64_t then)
    be turned on. */
 void
 timer_sleep (int64_t ticks) 
-{
-  int64_t start = timer_ticks ();
-
-  ASSERT (intr_get_level () == INTR_ON);
-  while (timer_elapsed (start) < ticks) 
-    thread_yield ();
+{  
+  //Put the thread to sleep
+  thread_sleep (ticks);
 }
 
 /* Sleeps for approximately MS milliseconds.  Interrupts must be
@@ -171,6 +172,31 @@ static void
 timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
+
+  //Navigate through all threads to check if some thread has finished sleeping
+  //thread_foreach (&checkThreadSleepTimer, NULL);
+  thread_checkThreadSleepTimer ();
+
+  if(thread_mlfqs)
+  {
+    //Check if one second passed (MLFQ data updation)
+    if( (ticks % TIMER_FREQ) == 0 )
+    {
+
+      //Update system load average
+      thread_mlfq_updateSystemLoadAverage ();
+      
+      //Update recent CPU value for all threads
+      thread_mlfq_updateAllThreadsRecentCPU ();
+    }
+
+    //If four cycles passed, recalculate thread priority
+    if( (ticks % PRIORITY_RECALCULATION_FREQUENCY) == 0 )
+    {
+      thread_mlfq_updateAllThreadsPriority ();
+    }
+  }
+
   thread_tick ();
 }
 
